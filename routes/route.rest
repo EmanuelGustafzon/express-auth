@@ -1,0 +1,12 @@
+POST https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/users/login
+Content-Type: application/json
+
+{
+    "username": "Emanuel",
+    "password": "test"
+}
+
+###
+
+GET https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/users/protected
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGUwZTcwMGMzYmYwMjM1MWZiZjJjOWIiLCJpYXQiOjE2OTI0NzE4OTF9.-mTcFytd6dKuxd1Po_fUyS7TiKle7wxrUGBBVELCtWA
