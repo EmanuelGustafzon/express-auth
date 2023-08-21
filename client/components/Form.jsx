@@ -24,8 +24,8 @@ const Form = ({ onLogin }) => {
                 password: data.password
             })
             .then(response => {
-                const { accessToken } = response.data
-                onLogin(accessToken)
+                const { accessToken, refreshToken } = response.data
+                onLogin(accessToken, refreshToken)
             })
             .catch(error => {
                 console.log('Error', error)

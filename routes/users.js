@@ -17,6 +17,19 @@ router.post('/register', async (req, res) => {
     }
 })
 
+let refreshTokens = []
+
+router.post('/token', (req, res) => {
+    const refreshToken = req.body.token
+    if (refreshToken == null) return res.sendStatus(401)
+    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err) return res.sendStatus(403)
+      const accessToken = generateAccessToken({ userId: user._id });
+      res.json({ accessToken: accessToken })
+    })
+  })
+
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -24,8 +37,10 @@ router.post('/login', async (req, res) => {
         
         if (user && user.password === password) {
             const userID = { userId: user._id };
-            const accessToken = jwt.sign(userID, process.env.ACCESS_TOKEN_SECRET);
-            res.json({ accessToken: accessToken });
+            const accessToken = generateAccessToken(userID);
+            const refreshToken = jwt.sign(userID, process.env.REFRESH_TOKEN_SECRET)
+            refreshTokens.push(refreshToken)
+            res.json({ accessToken: accessToken, refreshToken: refreshToken });
         } else {
             res.status(401).json({ error: 'Invalid username or password' });
         }
@@ -37,6 +52,13 @@ router.post('/login', async (req, res) => {
 router.get('/protected', authenticateToken, (req, res, next) => {
     res.send("This is a protected route");
 })
+
+
+
+
+function generateAccessToken(userID) {
+    return jwt.sign(userID, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' })
+}
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization']
