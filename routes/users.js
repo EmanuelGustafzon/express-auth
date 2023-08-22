@@ -31,7 +31,7 @@ router.post('/login', async (req, res) => {
         if (user && bcrypt.compareSync(password, user.password)) {
             const userId = { userId: user._id };
             const accessToken = generateAccessToken(userId);
-            const refreshToken = jwt.sign(userId, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '56h'})
+            const refreshToken = jwt.sign(userId, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '72h'})
             const saveToken = new RefreshToken({token: refreshToken})
             await saveToken.save()
             res.setHeader('Access-Token', `Bearer ${accessToken}`)
@@ -44,6 +44,21 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+router.delete('/logout', async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const refreshtoken = authHeader.split(' ')[1]
+
+    if(refreshtoken == null) return res.sendStatus(401)
+    try {
+        const findRefreshToken = await RefreshToken.findOne({token: refreshtoken})
+        if(!findRefreshToken) return res.sendStatus(401)
+        await findRefreshToken.deleteOne()
+        res.json({ message: 'Logout successful' });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
 
 router.post('/renewToken', async (req, res) => {
     const authHeader = req.headers['authorization'];
