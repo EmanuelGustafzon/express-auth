@@ -30,9 +30,13 @@ const ProtectedRoute = () => {
     const renewToken = async () => {
         const refreshToken = localStorage.getItem('refreshToken');
         console.log(refreshToken)
+
+        if(refreshToken) {
         try {
-            const response = await axios.post('https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/users/token', {
-                token: refreshToken,
+            const response = await axios.post('https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/users/renewToken', {
+                headers: {
+                    Authorization: `Bearer ${refreshToken}`
+                }
             });
             const newAccessToken = response.data.accessToken;
             console.log(newAccessToken)
@@ -41,6 +45,7 @@ const ProtectedRoute = () => {
 
         } catch (error) {
             console.log(error)
+        }
         }
     }
 

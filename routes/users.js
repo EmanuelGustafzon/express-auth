@@ -1,46 +1,42 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User')
-const jwt = require('jsonwebtoken');
-const res = require('express/lib/response');
-const req = require('express/lib/request');
 require('dotenv').config();
+const User = require('../models/User')
+const RefreshToken = require('../models/RefreshToken')
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
-router.post('/register', async (req, res) => {
+
+router.post('/register', validatePassword, async (req, res) => {
     const { username, password } = req.body;
     try{
-        const user = new User({username, password})
-        await user.save()
-        res.send(user)
+        const existingUser = await User.findOne({username: username})
+        if(existingUser) {
+            return res.status(409).send('Username already exsis');
+        }
+        const hashedPassword = bcrypt.hashSync(password, 10);
+        const user = new User({username, password: hashedPassword});
+        await user.save();
+        res.send('Registration successful!');
+
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });
     }
 })
 
-let refreshTokens = []
-
-router.post('/token', (req, res) => {
-    const refreshToken = req.body.token
-    if (refreshToken == null) return res.sendStatus(401)
-    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-      if (err) return res.sendStatus(403)
-      const accessToken = generateAccessToken({ userId: user._id });
-      res.json({ accessToken: accessToken })
-    })
-  })
-
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
         const user = await User.findOne({ username });
-        
-        if (user && user.password === password) {
-            const userID = { userId: user._id };
-            const accessToken = generateAccessToken(userID);
-            const refreshToken = jwt.sign(userID, process.env.REFRESH_TOKEN_SECRET)
-            refreshTokens.push(refreshToken)
-            res.json({ accessToken: accessToken, refreshToken: refreshToken });
+        if (user && bcrypt.compareSync(password, user.password)) {
+            const userId = { userId: user._id };
+            const accessToken = generateAccessToken(userId);
+            const refreshToken = jwt.sign(userId, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '56h'})
+            const saveToken = new RefreshToken({token: refreshToken})
+            await saveToken.save()
+            res.setHeader('Access-Token', `Bearer ${accessToken}`)
+            res.setHeader('Refresh-Token', `Bearer ${refreshToken}`)
+            res.json({ message: 'Response with custom header' });
         } else {
             res.status(401).json({ error: 'Invalid username or password' });
         }
@@ -49,11 +45,30 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.post('/renewToken', async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const refreshtoken = authHeader.split(' ')[1]
+
+    if(refreshtoken == null) return res.sendStatus(401)
+
+    try {
+        const findRefreshToken = await RefreshToken.findOne({token: refreshtoken})
+        if(!findRefreshToken) return res.sendStatus(401)
+
+        jwt.verify(refreshtoken, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
+            if(error) return res.sendStatus(403)
+            const accessToken = generateAccessToken({userId: user._id});
+            res.setHeader('Access-Token', `Bearer ${accessToken}`)
+            res.json({ message: 'New access token sent as header' });
+        })
+    } catch (error) {
+        res.json({message: error})
+    }
+}) 
+
 router.get('/protected', authenticateToken, (req, res, next) => {
     res.send("This is a protected route");
 })
-
-
 
 
 function generateAccessToken(userID) {
@@ -76,5 +91,9 @@ function authenticateToken(req, res, next) {
     }) 
 }
 
+function validatePassword(req, res, next) {
+    if(req.body.password.length < 6) return res.send('The password needs to have atleast 6 characters')
+    next()
+}
 
 module.exports = router;

@@ -2,20 +2,17 @@ POST https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/users/l
 Content-Type: application/json
 
 {
-    "username": "Emanuel",
-    "password": "test"
+    "username": "ingrid",
+    "password": "secret"
 }
 
 ###
 
 GET https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/users/protected
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTI2Mzc4OTAsImV4cCI6MTY5MjYzNzkyMH0.NcMpZ3g8dfc2Y2CpxTzvdZuzKgAcNHmIpbSWYCEdWkY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTI3Mjg5MDcsImV4cCI6MTY5MjcyODkzN30.E9VZDpv0I63z2ilIKyWkBUtQZQEnVs-b-m-IMqsK9qk
+
 
 ###
 
-POST https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/users/token 
-Content-Type: application/json
-
-{
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGUwZTcwMGMzYmYwMjM1MWZiZjJjOWIiLCJpYXQiOjE2OTI2MzYxOTR9.PNwrkJjhxfEx36Bi_rCnhziLzYL4sC6SLTE0d3Rd5u0"
-}
+POST https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/users/renewToken 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGU0ZmRmOGY1ODIzYmEyYThkZTZlZTciLCJpYXQiOjE2OTI3Mjg4MzQsImV4cCI6MTY5MjkzMDQzNH0.QH8RH7XzTof6j0_q5ougnAtr3TfYJyvGpFcDk1NaX7A
