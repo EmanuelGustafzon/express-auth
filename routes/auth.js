@@ -3,6 +3,9 @@ const router = express.Router();
 require('dotenv').config();
 const User = require('../models/User')
 const RefreshToken = require('../models/RefreshToken')
+const validatePassword = require('../middlewares/validatePassword')
+const generateAccessToken = require('../middlewares/generateAccessToken')
+const checkRefreshToken = require('../middlewares/checkRefreshToken')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -40,55 +43,40 @@ router.post('/login', async (req, res) => {
         } else {
             res.status(401).json({ error: 'Invalid username or password' });
         }
-    } catch (err) {
-        res.status(500).json({ error: 'Internal server error' });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Sorry we are having some problems right now, kindly try again.' });
     }
 });
 
-router.delete('/logout', async (req, res) => {
-    const authHeader = req.headers['authorization'];
-    const refreshtoken = authHeader.split(' ')[1]
-
-    if(refreshtoken == null) return res.sendStatus(401)
+router.delete('/logout', checkRefreshToken, async (req, res) => {
     try {
-        const findRefreshToken = await RefreshToken.findOne({token: refreshtoken})
-        if(!findRefreshToken) return res.sendStatus(401)
-        await findRefreshToken.deleteOne()
+        await req.findRefreshToken.deleteOne()
         res.json({ message: 'Logout successful' });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Internal server error' });
     }
 })
 
-router.post('/renewToken', async (req, res) => {
-    const authHeader = req.headers['authorization'];
-    const refreshtoken = authHeader.split(' ')[1]
-
-    if(refreshtoken == null) return res.sendStatus(401)
-
+router.post('/renewToken', checkRefreshToken, (req, res) => {
     try {
-        const findRefreshToken = await RefreshToken.findOne({token: refreshtoken})
-        if(!findRefreshToken) return res.sendStatus(401)
-
-        jwt.verify(refreshtoken, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
-            if(error) return res.sendStatus(403)
-            const accessToken = generateAccessToken({userId: user._id});
-            res.setHeader('Access-Token', `Bearer ${accessToken}`)
-            res.json({ message: 'New access token sent as header' });
+        jwt.verify(req.findRefreshToken.token, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
+        if(error) return res.sendStatus(403)
+        const accessToken = generateAccessToken({userId: user._id});
+        res.setHeader('Access-Token', `Bearer ${accessToken}`)
+        res.json({ message: 'New access token sent as header' });
         })
     } catch (error) {
+        console.log(error)
         res.json({message: error})
     }
 }) 
 
-router.get('/protected', authenticateToken, (req, res, next) => {
+router.get('/protected', authenticateToken, (req, res) => {
     res.send("This is a protected route");
 })
 
-
-function generateAccessToken(userID) {
-    return jwt.sign(userID, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' })
-}
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization']
@@ -104,11 +92,6 @@ function authenticateToken(req, res, next) {
         req.user = user
         next()
     }) 
-}
-
-function validatePassword(req, res, next) {
-    if(req.body.password.length < 6) return res.send('The password needs to have atleast 6 characters')
-    next()
 }
 
 module.exports = router;

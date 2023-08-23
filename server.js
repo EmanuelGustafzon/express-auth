@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 require('dotenv').config();
 const mongoose = require('mongoose');
-const UsersRoutes = require('./routes/users')
+const authRoutes = require('./routes/auth')
+const readUsers = require('./routes/readUsers')
+const accountRoutes = require('./routes/account')
 const cors = require('cors');
 const deleteOldRefreshToken = require('./node-cron/deleteRefreshTokens')
 
@@ -26,7 +28,9 @@ app.get('/', (req, res) => {
     res.send('hello world')
   })
 
-  app.use('/users', UsersRoutes)
+app.use('/auth', authRoutes)
+app.use('/readUsers', readUsers)
+app.use('/account', accountRoutes)
 
 
 // delete all the expires refreshTokens
