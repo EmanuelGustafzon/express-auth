@@ -11,7 +11,7 @@ const deleteOldRefreshToken = require('./node-cron/deleteRefreshTokens')
 app.use(express.json())
 const corsOptions = {
   origin: process.env.origin || 'https://3001-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io',
-  methods: ['GET', 'POST', 'DELETE', 'PUT'],
+  methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 app.use(cors(corsOptions));
