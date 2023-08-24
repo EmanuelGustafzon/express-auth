@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const validatePassword = require('../middlewares/validatePassword')
 const authenticateToken = require('../middlewares/authenticateToken')
+const checkRefreshToken = require('../middlewares/checkRefreshToken')
 
 router.patch('/newUsername', authenticateToken, async (req, res) => {
     const { username } = req.body
@@ -26,10 +27,15 @@ router.patch('/newPassword', validatePassword, authenticateToken, async (req, re
 
     try {
         const user = await User.findOne({userId: req.user._id})
-        if(!bcrypt.compare(password, user.password)) {
-            res.status(403).json({message: 'Wrong password'})
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordCorrect) {
+            return res.status(403).json({ message: 'Wrong password' });
         }
-        user.password = newPassword
+
+        const hashedPassword = bcrypt.hashSync(newPassword, 10)
+        user.password = hashedPassword
         await user.save()
         res.json({ message: 'Password updated successfully' });
     } catch (error) {
@@ -38,13 +44,17 @@ router.patch('/newPassword', validatePassword, authenticateToken, async (req, re
     }
 })
 
-router.delete('/deleteAccount', authenticateToken, async (req, res) => {
+router.delete('/deleteAccount', checkRefreshToken, authenticateToken,  async (req, res) => {
     const {password} = req.body
 
     const user = await User.findOne({userId: req.user._id})
-    if(!bcrypt.compare(password, user.password)) {
-        res.status(403).json({message: 'Wrong password'})
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+            return res.status(403).json({ message: 'Wrong password' });
     }
+    await req.checkRefreshToken.deleteOne()
     try {
         await user.deleteOne()
         res.status(200).json({message: 'Your account got deleted successfully'})
