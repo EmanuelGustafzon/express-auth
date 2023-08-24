@@ -44,17 +44,17 @@ router.patch('/newPassword', validatePassword, authenticateToken, async (req, re
     }
 })
 
-router.delete('/deleteAccount', checkRefreshToken, authenticateToken,  async (req, res) => {
+router.delete('/deleteAccount', checkRefreshToken,  async (req, res) => {
     const {password} = req.body
 
-    const user = await User.findOne({userId: req.user._id})
+    const user = await User.findOne({userId: req.findRefreshToken._id})
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
             return res.status(403).json({ message: 'Wrong password' });
     }
-    await req.checkRefreshToken.deleteOne()
+    await req.findRefreshToken.deleteOne()
     try {
         await user.deleteOne()
         res.status(200).json({message: 'Your account got deleted successfully'})

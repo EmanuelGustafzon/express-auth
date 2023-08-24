@@ -12,38 +12,38 @@ POST https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/auth/lo
 Content-Type: application/json
 
 {
-    "username": "Emanuel",
-    "password": "secret"
+    "username": "Karen",
+    "password": "password"
 }
 
 ###
 
 DELETE https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/auth/logout
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGU2ZjVlMjdjYWU2NmMyNzFhNjUzZTkiLCJpYXQiOjE2OTI4NTc5MTEsImV4cCI6MTY5MzExNzExMX0.FWXOzmwUP2XbVkAMffbkJLnm_3AhXpFW7SYpXI_geJU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGU3NzkwZjM0NzhhNDU3NmNiYzRlYTciLCJpYXQiOjE2OTI4OTE0MzYsImV4cCI6MTY5MzE1MDYzNn0.T-vZPW9rkAmCKyniLXQWIT4Dj5XnExcari4gnlDZj-g
 
 ###
 
 GET https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/auth/protected
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTI4NTg0NjcsImV4cCI6MTY5Mjg1ODQ5N30.hpfJMbtJSAEYJYifV_DLIfVxdPCpRd_HCWW21eYpsFw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTI4OTE0NTEsImV4cCI6MTY5Mjg5MjE3MX0.aTybXC49xUn2BfhcbrJWewIK9oeY2rpBLYFDu8FJggY
 
 
 ###
 
 POST https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/auth/renewToken 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGU2ZjVlMjdjYWU2NmMyNzFhNjUzZTkiLCJpYXQiOjE2OTI4NTc5MTEsImV4cCI6MTY5MzExNzExMX0.FWXOzmwUP2XbVkAMffbkJLnm_3AhXpFW7SYpXI_geJU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGU3NzkwZjM0NzhhNDU3NmNiYzRlYTciLCJpYXQiOjE2OTI4OTE0MzYsImV4cCI6MTY5MzE1MDYzNn0.T-vZPW9rkAmCKyniLXQWIT4Dj5XnExcari4gnlDZj-g
 ###
 
 POST https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/readUsers
 Content-Type: application/json
 
 {
-    "username": "test"
+    "username": "Emanuel"
 }
 
 ###
 
 PATCH https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/account/newUsername
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTI4NTc5NDQsImV4cCI6MTY5Mjg1Nzk3NH0._DmbA3Scpvf4JOhMdDCc4rlYkpigM4rElugOtgZhTgU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTI4OTE0NTEsImV4cCI6MTY5Mjg5MjE3MX0.aTybXC49xUn2BfhcbrJWewIK9oeY2rpBLYFDu8FJggY
 Content-Type: application/json
 
 {
@@ -53,20 +53,20 @@ Content-Type: application/json
 ###
 
 PATCH https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/account/newPassword
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTI4NTgyMjgsImV4cCI6MTY5Mjg1ODI1OH0.m1vxRkgqjy_kzZgBOF7ewhqbCMFOgLjF-63VsT8kAgk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTI4OTE0NTEsImV4cCI6MTY5Mjg5MjE3MX0.aTybXC49xUn2BfhcbrJWewIK9oeY2rpBLYFDu8FJggY
 Content-Type: application/json
 
 {
-    "password": "newSecret",
-    "newPassword": "secret"
+    "password": "secret",
+    "newPassword": "password"
 }
 
 ###
 
 DELETE https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/account/deleteAccount
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGU2ZmIxYjU3YTZjMjdlZGNiMTg2NjUiLCJpYXQiOjE2OTI4NTkxNzEsImV4cCI6MTY5MzExODM3MX0.a6iJ4kS_YgjLXrWZWitG3lhLxLBwHdLUm1pDYuyj_eU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGU3NzkwZjM0NzhhNDU3NmNiYzRlYTciLCJpYXQiOjE2OTI4OTE1ODksImV4cCI6MTY5MzE1MDc4OX0.nq9lmh_y1A8BOzX-q8LjsJCyROI8nqSvXv4ck72P5ek
 Content-Type: application/json
 
 {
-    "password": "secret"
+    "password": "password"
 }
