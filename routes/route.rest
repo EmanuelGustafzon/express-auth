@@ -1,8 +1,8 @@
-POST https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/auth/register
+POST https://authentication-express-api-479c15ab26f4.herokuapp.com/auth/register
 Content-Type: application/json
 
 {
-    "username": "Emanuel",
+    "username": "Karen",
     "password": "secret"
 }
 
@@ -13,13 +13,13 @@ Content-Type: application/json
 
 {
     "username": "Karen",
-    "password": "password"
+    "password": "secret"
 }
 
 ###
 
 DELETE https://3000-emanuelgust-expressauth-9r32l4zhkks.ws-eu104.gitpod.io/auth/logout
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGU3NzkwZjM0NzhhNDU3NmNiYzRlYTciLCJpYXQiOjE2OTI4OTE0MzYsImV4cCI6MTY5MzE1MDYzNn0.T-vZPW9rkAmCKyniLXQWIT4Dj5XnExcari4gnlDZj-g
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGU3ODEyMzgwNzk1YWJiOGMwMTJjNDkiLCJpYXQiOjE2OTI4OTM0ODYsImV4cCI6MTY5MzE1MjY4Nn0.4cJFAHo1Cc-5kPq0N32IFiMSnciYPkInon0VvwN4Zyo
 
 ###
 
@@ -69,4 +69,13 @@ Content-Type: application/json
 
 {
     "password": "password"
+}
+
+###
+
+POST https://authentication-express-api-479c15ab26f4.herokuapp.com/readUsers
+Content-Type: application/json
+
+{
+    "username": "Emanuel"
 }
